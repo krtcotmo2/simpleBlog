@@ -3,33 +3,21 @@ const express = require("express");
 const app = express();
 const PORT = process.env.PORT || 3001; 
 const cookieParser = require("cookie-parser");
-
-let articleVotes = {
-  items:[
-  {
-    id:1,
-    upVotes:0,
-    comments:[]
-  }, {
-    id:2,
-    upVotes:0,
-    comments:[]
-  }, {
-    id:3,
-    upVotes:0,
-    comments:[]
-  }, {
-    id:4,
-    upVotes:0,
-    comments:[]
-  }, {
-    id:5,
-    upVotes:0,
-    comments:[]
-  },
-]}
+const mongoose = require("mongoose");
+const MongoClient =  require("mongodb");
 
 
+const withDB = async (operations, res) => {
+  try{    
+    const client = await MongoClient.connect("mongodb://localhost:27017", { useUnifiedTopology: true, useNewUrlParser: true});
+    const db = client.db("blogs");
+    await operations(db);
+    client.close();
+  }catch(err){
+    res.status(500).json({error:err})
+  }
+
+}
 
 //allows the body of post request so be read
 app.use(express.urlencoded({ extended: true }));
@@ -37,30 +25,52 @@ app.use(express.json());
 app.use(cookieParser());
 
 //basic routes
-// app.get("/hello", (req, res) => { 
-//     res.send("Hello Generic");  
-// })
-// app.get("/hello/:name", (req, res) => {
-//   res.send(`Hello ${req.params.name}`);
-// })
-// app.post("/hello", (req, res) => {
-//   console.log(req.body)
-//   res.send(`Hello ${req.body.name}`)
-// })
-app.post("/api/articles/:id/upvote", (req, res) =>{
-  const artId = Number(req.params.id);
-  const theArt = articleVotes.items.find(x => x.id === artId);
-  theArt.upVotes++;
-  res.status(200).send(`${theArt.id.toString()} now has ${theArt.upVotes} votes`)
-})
-app.post('/api/articles/:id/add-comment', (req, res)=>{
-  const artId = Number(req.params.id);
-  const theArt = articleVotes.items.find(x => x.id === artId);
-  const {username, comment} = req.body;
-  theArt.comments.push({username, comment});
-  console.log(theArt.comments)
-  res.status(200).send(`${theArt.id.toString()} now has ${theArt.comments.length} comments`)
+app.get('/api/articles/:id', async (req, res)=> { 
+  withDB( async (db) => {
+    const artId = Number(req.params.id);
+    const info = await db.collection("articles").findOne({articleID:artId});
+    res.status(200).json(info);  
+  }, res)
 });
+app.post("/api/articles/:id/upvote", async(req, res) =>{
+  withDB( async (db) => {
+    const artId = Number(req.params.id);    
+    const theArt = await db.collection("articles").findOne({articleID:artId});
+    await db.collection('articles').updateOne({articleID:artId},{
+        '$set' : {
+          upVotes: theArt.upVotes + 1,
+        },
+      }
+    )
+    const newVal = await db.collection("articles").findOne({articleID:artId});
+    res.status(200).json(newVal);
+  }, res)
+    
+    
+  
+})
+app.post('/api/articles/:id/add-comment', async (req, res)=>{
+  withDB( async (db) => {
+    const artId = Number(req.params.id);
+    const {username, comment} = req.body;
+    const theArt = await db.collection("articles").findOne({articleID:artId});
+    await db.collection('articles').updateOne({articleID:artId},{
+        '$set' : {
+          comments: [...theArt.comments, {username, comment}],
+        },
+      }
+    )
+    const newVal = await db.collection("articles").findOne({articleID:artId});
+    res.status(200).send(`${newVal.articleID.toString()} now has ${newVal.comments.length} comments`);
+  }, res)
+  
+});
+
+//CONNECT TO DB
+mongoose.connect(
+  process.env.MONGODB_URI || "mongodb://localhost/blogs",
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
 
 //Start and Listen
 app.listen(PORT, () => {
