@@ -10,7 +10,7 @@ export default class artilceListIem extends PureComponent{
   render(){
     return(
       <>
-        <Link className="article-list-item" to={`/article/12/12/20/${this.theArticle.id}`}>
+        <Link className="article-list-item" to={`/articles/${this.theArticle.id}`}>
           <h3>{this.theArticle.title}</h3>
           <p>{this.theArticle.content[0].substr(0,150)}...</p>
         </Link> 

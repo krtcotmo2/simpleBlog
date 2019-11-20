@@ -49,7 +49,7 @@ app.post("/api/articles/:id/upvote", async(req, res) =>{
     
   
 })
-app.post('/api/articles/:id/add-comment', async (req, res)=>{
+app.post('/api/articles/:id/addcomment', async (req, res)=>{
   withDB( async (db) => {
     const artId = Number(req.params.id);
     const {username, comment} = req.body;
@@ -61,7 +61,7 @@ app.post('/api/articles/:id/add-comment', async (req, res)=>{
       }
     )
     const newVal = await db.collection("articles").findOne({articleID:artId});
-    res.status(200).send(`${newVal.articleID.toString()} now has ${newVal.comments.length} comments`);
+    res.status(200).send(newVal);
   }, res)
   
 });
