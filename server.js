@@ -5,7 +5,7 @@ const PORT = process.env.PORT || 3001;
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const MongoClient =  require("mongodb");
-
+const path = require("path");
 
 const withDB = async (operations, res) => {
   try{    
@@ -20,6 +20,7 @@ const withDB = async (operations, res) => {
 }
 
 //allows the body of post request so be read
+app.use(express.static(path.join(__dirname,"client","build")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -71,6 +72,10 @@ mongoose.connect(
   process.env.MONGODB_URI || "mongodb://localhost/blogs",
   { useNewUrlParser: true, useUnifiedTopology: true }
 );
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "client", "build", "index.html"));
+});
 
 //Start and Listen
 app.listen(PORT, () => {
