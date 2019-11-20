@@ -9,6 +9,8 @@ import About from "./pages/about";
 import FourOFour from "./pages/fourOfour";
 import Navbar from "./components/navbar";
 
+
+
 function App() {
   return (
     <Router>
@@ -18,7 +20,7 @@ function App() {
           <Switch>
             <Route path="/" component={Home} exact/>
             <Route path="/next" component={NextPage} />
-            <Route path="/article/:month/:date/:year/:id" component={Article} />
+            <Route path="/articles/:id" component={Article} />
             <Route path="/articles" component={Articles} />
             <Route path="/about" component={About} />
             <Route component={FourOFour} />

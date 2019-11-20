@@ -93,9 +93,9 @@ nav a:hover {
   margin-bottom: 16px;
 }
 
-#add-comment-form input, textarea {
+.add-comment-form input, textarea {
   display: block;
-  width: 300px;
+  width: 100%;
   padding: 8px;
   border-radius: 8px;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -116,4 +116,7 @@ nav a:hover {
 .comment {
   border-bottom: 2px solid black;
   padding: 16px;
+}
+button{
+  padding:8px 16px;
 }
