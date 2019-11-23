@@ -31,7 +31,7 @@ app.use(routes);
 
 //CONNECT TO DB
 mongoose.connect(
-  "mongodb://localhost:27017" || "mongodb://localhost/blogs",
+  "mongodb://127.0.0.1:27017" || "mongodb://localhost/blogs",
   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 );
 
