@@ -26,51 +26,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 //basic routes
-app.get('/api/articles/:id', async (req, res)=> { 
-  withDB( async (db) => {
-    const artId = Number(req.params.id);
-    const info = await db.collection("articles").findOne({articleID:artId});
-    res.status(200).json(info);  
-  }, res)
-});
-app.post("/api/articles/:id/upvote", async(req, res) =>{
-  withDB( async (db) => {
-    const artId = Number(req.params.id);    
-    const theArt = await db.collection("articles").findOne({articleID:artId});
-    await db.collection('articles').updateOne({articleID:artId},{
-        '$set' : {
-          upVotes: theArt.upVotes + 1,
-        },
-      }
-    )
-    const newVal = await db.collection("articles").findOne({articleID:artId});
-    res.status(200).json(newVal);
-  }, res)
-    
-    
-  
-})
-app.post('/api/articles/:id/addcomment', async (req, res)=>{
-  withDB( async (db) => {
-    const artId = Number(req.params.id);
-    const {username, comment} = req.body;
-    const theArt = await db.collection("articles").findOne({articleID:artId});
-    await db.collection('articles').updateOne({articleID:artId},{
-        '$set' : {
-          comments: [...theArt.comments, {username, comment}],
-        },
-      }
-    )
-    const newVal = await db.collection("articles").findOne({articleID:artId});
-    res.status(200).send(newVal);
-  }, res)
-  
-});
+const routes = require("./routes");
+app.use(routes);
 
 //CONNECT TO DB
 mongoose.connect(
   process.env.MONGODB_URI || "mongodb://localhost/blogs",
-  { useNewUrlParser: true, useUnifiedTopology: true }
+  { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 );
 
 app.get("*", (req, res) => {

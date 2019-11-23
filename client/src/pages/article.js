@@ -13,7 +13,7 @@ const Article = ({match}) => {
   
   useEffect( () => {
     const fetchData = async () => {
-      const result = await fetch(`/api/articles/${pathId.id}`);
+      const result = await fetch(`/api/articles/v2/${pathId.id}`);
       const body = await result.json();
       setArticleInfo(body);
     }
