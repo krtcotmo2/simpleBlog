@@ -31,7 +31,7 @@ app.use(routes);
 
 //CONNECT TO DB
 mongoose.connect(
-  process.env.MONGODB_URI || "mongodb://localhost/blogs",
+  "mongodb://localhost:27017" || "mongodb://localhost/blogs",
   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 );
 
