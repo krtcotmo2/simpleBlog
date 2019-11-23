@@ -20,7 +20,7 @@ const withDB = async (operations, res) => {
 }
 
 //allows the body of post request so be read
-app.use(express.static(path.join(__dirname,"client","build")));
+app.use(express.static(path.join(__dirname,"/client","/build")));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
@@ -79,5 +79,6 @@ app.get("*", (req, res) => {
 
 //Start and Listen
 app.listen(PORT, () => {
+  console.log(PORT)
   console.log(`🌎 ==> API server now on port ${PORT}!`);
 });
