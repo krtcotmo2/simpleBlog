@@ -1,5 +1,4 @@
 const express = require("express");
-const router = require("express").Router();
 
 const app = express();
 const PORT = process.env.PORT || 3001; 
@@ -7,7 +6,6 @@ const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const MongoClient =  require("mongodb");
 const path = require("path");
-const articleController = require("./controllers/articleController");
 
 const withDB = async (operations, res) => {
   try{    
@@ -30,8 +28,6 @@ app.use(cookieParser());
 //basic routes
 const routes = require("./routes");
 app.use(routes);
-router.route("/api/articles/v2")
-   .get(articleController.getArticles)
 
 //CONNECT TO DB
 mongoose.connection.on('error', err => {
