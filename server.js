@@ -30,9 +30,13 @@ const routes = require("./routes");
 app.use(routes);
 
 //CONNECT TO DB
+let conStr = `mongodb://localhost/blogs`;
+
+if(process.env.MONGODB_URI !== undefined){
+  conStr ="mongodb://127.0.0.1:27017/?compressors=disabled&gssapiServiceName=mongodb";
+} 
 mongoose.connect(
-  "mongodb://127.0.0.1:27017/blogs",
-  //process.env.MONGODB_URI || "mongodb://localhost/blogs",
+  conStr,
   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
 );
 
