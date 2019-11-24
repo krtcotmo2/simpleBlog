@@ -30,11 +30,14 @@ const routes = require("./routes");
 app.use(routes);
 
 //CONNECT TO DB
+mongoose.connection.on('error', err => {
+  logError(err);
+});
 let conStr = `mongodb://localhost/blogs`;
 
 if(process.env.MONGODB_URI !== undefined){
   conStr ="mongodb://127.0.0.1:27017";
-} 
+}
 mongoose.connect(
   conStr,
   { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }
@@ -48,4 +51,6 @@ app.get("*", (req, res) => {
 app.listen(PORT, () => {
   console.log(PORT)
   console.log(`🌎 ==> API server now on port ${PORT}!`);
+}).on("error", function(err){
+  console.log("sever connection err", err)
 });
