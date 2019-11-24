@@ -2,8 +2,8 @@ const router = require("express").Router();
 const articleController = require("../../controllers/articleController")
 
 //matches api/articles/v2/:id
-router.route("/v2")
-  .get(articleController.getArticles)
+// router.route("/v2")
+//   .get(articleController.getArticles)
   
 //matches api/articles/v2/:id
 router.route("/v2/:id")
